@@ -23,31 +23,47 @@
 */
 #include "Storage/MySimpleStorage.hpp"
 
+#include <algorithm>
+#include <stdexcept>
+
 namespace storage
 {
+
+MySimpleStorage::MySimpleStorage(): max_capacity_(10), storage_()
+{
+}
 
 MySimpleStorage::~MySimpleStorage()
 {
 }
 
-bool MySimpleStorage::store(float /*item*/)
+bool MySimpleStorage::store(float item)
 {
-  return false;
+  if (storage_.size() >= max_capacity_) return false;
+  if (std::find(storage_.begin(), storage_.end(), item) != storage_.end()) return false;
+  storage_.push_back(item);
+  return true;
 }
 
 size_t MySimpleStorage::size()
 {
-  return 0;
+  return storage_.size();
 }
 
 float MySimpleStorage::fetchFirst()
 {
-  return 0.0f;
+  if (storage_.empty()) throw std::runtime_error("fetchFirst on empty Storage");
+  float result = storage_.front();
+  storage_.pop_front();
+  return result;
 }
 
 float MySimpleStorage::fetchLast()
 {
-  return 0.0f;
+  if (storage_.empty()) throw std::runtime_error("fetchLast on empty Storage");
+  float result = storage_.back();
+  storage_.pop_back();
+  return result;
 }
 
 }  // namespace storage

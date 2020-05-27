@@ -25,6 +25,9 @@
 
 #include "Storage/IStorage.hpp"
 
+#include <cstddef>
+#include <deque>
+
 namespace storage
 {
 
@@ -34,11 +37,16 @@ namespace storage
 class MySimpleStorage: public IStorage
 {
 public:
+  MySimpleStorage();
   ~MySimpleStorage() override;
   bool store(float item) override;
   size_t size() override;
   float fetchFirst() override;
   float fetchLast() override;
+
+private:
+  size_t max_capacity_;
+  std::deque<float> storage_;
 };
 
 }  // namespace storage
