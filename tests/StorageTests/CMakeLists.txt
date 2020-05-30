@@ -2,7 +2,7 @@ add_executable(ut-mysimplestorage
   MySimpleStorageTests.cpp
 )
 target_link_libraries(ut-mysimplestorage
-  gmock_main
+  gtest_main
   Log
   Storage
 )
