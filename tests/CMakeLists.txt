@@ -1,3 +1,5 @@
 add_subdirectory(googletest)
+add_library(mocks INTERFACE)
+target_include_directories(mocks INTERFACE .)
 add_subdirectory(InterpreterTests)
 add_subdirectory(StorageTests)
