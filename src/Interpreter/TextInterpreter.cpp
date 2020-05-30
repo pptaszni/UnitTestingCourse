@@ -24,9 +24,13 @@
 
 #include "Interpreter/TextInterpreter.hpp"
 #include "Storage/IStorage.hpp"
+#include "Log/Debug.hpp"
 
+#include <algorithm>
+#include <numeric>
 #include <istream>
 #include <memory>
+#include <string>
 
 namespace interpreter
 {
@@ -40,9 +44,64 @@ TextInterpreter::~TextInterpreter()
 {
 }
 
-bool TextInterpreter::interpret(std::istream& /*input*/)
+bool TextInterpreter::interpret(std::istream& input)
 {
-  return false;
+  std::string line;
+  std::getline(input, line);
+  if (line != "START")
+  {
+    DEBUG("Corrupted data start: " << line);
+    return false;
+  }
+  std::vector<float> args;
+  while (line != "END")
+  {
+    std::getline(input, line);
+    if (line == "ADD")
+    {
+      storage_->store(add(args));
+      args.clear();
+    }
+    else if (line == "SUB")
+    {
+      storage_->store(sub(args));
+      args.clear();
+    }
+    else if (line == "REDUCE")
+    {
+      storage_->store(reduce(args));
+      args.clear();
+    }
+    else if (line == "END") break;
+    else
+    {
+      try
+      {
+        args.push_back(std::stof(line));
+      }
+      catch (const std::exception& e)
+      {
+        DEBUG("Failed to parse arg: " << e.what());
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+float TextInterpreter::add(const std::vector<float>& args)
+{
+  return args[0]+args[1];
+}
+
+float TextInterpreter::sub(const std::vector<float>& args)
+{
+  return args[0]-args[1];
+}
+
+float TextInterpreter::reduce(const std::vector<float>& args)
+{
+  return std::accumulate(args.begin(), args.end(), 0);
 }
 
 }  // namespace storage

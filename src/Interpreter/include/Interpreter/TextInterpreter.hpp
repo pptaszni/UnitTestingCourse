@@ -28,6 +28,7 @@
 
 #include <istream>
 #include <memory>
+#include <vector>
 
 namespace interpreter
 {
@@ -53,6 +54,9 @@ public:
   bool interpret(std::istream& input) override;
 
 private:
+  float add(const std::vector<float>& args);
+  float sub(const std::vector<float>& args);
+  float reduce(const std::vector<float>& args);
   std::shared_ptr<storage::IStorage> storage_;
 };
 
